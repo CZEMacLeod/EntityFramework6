@@ -215,6 +215,7 @@ namespace ProductivityApiTests
             VerifySetsAreInitialized<SimpleModelContextWithNoData>(DbCompiledModelContents.DontMatch);
         }
 
+#if NET452
         [Fact]
         public void Model_Tweaking_is_ignored_when_using_model_ctor_on_DbContext()
         {
@@ -236,6 +237,7 @@ namespace ProductivityApiTests
                 Assert.Equal(type.KeyMembers.First().Name, "Title");
             }
         }
+#endif
 
         [Fact]
         public void Verify_DbContext_construction_using_connection_string_ctor_when_string_is_database_name()
@@ -581,6 +583,7 @@ namespace ProductivityApiTests
                 "DbContext_ConnectionStringNotFound", "NonexistentConnectionString");
         }
 
+#if NET452
         [Fact]
         public void DbContext_caches_models_for_two_providers()
         {
@@ -602,6 +605,7 @@ namespace ProductivityApiTests
                 }
             }
         }
+#endif
 
         #endregion
 
@@ -706,7 +710,7 @@ namespace ProductivityApiTests
 
         private void SaveChanges_performs_DetectChanges_implementation(Func<DbContext, int> saveChanges)
         {
-            // NOTE: This is split out into a seperate test from the above test because 
+            // NOTE: This is split out into a separate test from the above test because 
             //       it is important no other APIs are called between the modification 
             //       and calling SaveChanges due to other APIs calling DetectChanges implicitly
 
@@ -895,7 +899,11 @@ namespace ProductivityApiTests
 
 #if !NET40
 
-        [Fact]
+        [Fact(
+#if NETCOREAPP3_0
+            Skip = "Deadlocks on .Result"
+#endif
+            )]
         [UseDefaultExecutionStrategy]
         public void SaveChangesAsync_bubbles_UpdateException()
         {
@@ -3581,7 +3589,7 @@ namespace ProductivityApiTests
 
             // this only works for integrated security, or when password is persisted after connecting
             // otherwise we can't connect to database during context initialization (password is gone from connection string)
-            if (DatabaseTestHelpers.IsIntegratedSecutity(connectionString) ||
+            if (DatabaseTestHelpers.IsIntegratedSecurity(connectionString) ||
                 DatabaseTestHelpers.PersistsSecurityInfo(connectionString))
             {
 
@@ -3606,7 +3614,7 @@ namespace ProductivityApiTests
 
         [Fact]
         [UseDefaultExecutionStrategy]
-        public void DbContext_can_be_initialized_without_promotion_to_distributed_transaction_inside_user_transaction_if_the_context_type_has_been_previously_initalized_outside()
+        public void DbContext_can_be_initialized_without_promotion_to_distributed_transaction_inside_user_transaction_if_the_context_type_has_been_previously_initialized_outside()
         {
             var connectionString = default(string);
             using (var context = new TransactionTestsContext())
@@ -3618,7 +3626,7 @@ namespace ProductivityApiTests
 
             // this only works for integrated security, or when password is persisted after connecting
             // otherwise we can't connect to database during context initialization (password is gone from connection string)
-            if (DatabaseTestHelpers.IsIntegratedSecutity(connectionString) ||
+            if (DatabaseTestHelpers.IsIntegratedSecurity(connectionString) ||
                 DatabaseTestHelpers.PersistsSecurityInfo(connectionString))
             {
                 using (var connection = new SqlConnection(connectionString))

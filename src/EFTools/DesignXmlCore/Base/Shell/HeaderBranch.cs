@@ -9,6 +9,7 @@ namespace Microsoft.Data.Entity.Design.Base.Shell
     using System.Diagnostics;
     using System.Windows.Forms;
     using Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid;
+    using Microsoft.VisualStudio.Data.Tools.Design.XmlCore;
 
     /// <summary>
     ///     simple branch that exposes a set of child branches via headers
@@ -118,13 +119,16 @@ namespace Microsoft.Data.Entity.Design.Base.Shell
         /// </summary>
         /// <param name="row">Target row</param>
         /// <param name="column">Target column</param>
-        /// <returns>Populated VirtualTreeAccessibilityData structue, or VirtualTreeAccessibilityData.Empty</returns>
+        /// <returns>Populated VirtualTreeAccessibilityData structure, or VirtualTreeAccessibilityData.Empty</returns>
         protected virtual VirtualTreeAccessibilityData GetAccessibilityData(int row, int column)
         {
             // initial header column - {display text} {row} {child count}
             if (column == 0)
             {
-                return new VirtualTreeAccessibilityData("{1}, {3} {2}", TreeGridDesignerBranch._descriptionAccessibilityReplacementFields);
+                return new VirtualTreeAccessibilityData(
+                    "{1}, {3} {2}", TreeGridDesignerBranch._descriptionAccessibilityReplacementFields,
+                    Resources.MappingDetails_Up_And_Down, new AccessibilityReplacementField[0],
+                    Resources.MappingDetails_Up_And_Down);
             }
 
             // header check box columns
@@ -132,11 +136,17 @@ namespace Microsoft.Data.Entity.Design.Base.Shell
                 && GetCheckBoxValue(row, column) != CheckBoxState.Unsupported)
             {
                 // check box - {column header} {state image text} {row}
-                return new VirtualTreeAccessibilityData("{0} {5} {3}", TreeGridDesignerBranch._descriptionAccessibilityReplacementFields);
+                return new VirtualTreeAccessibilityData(
+                    "{0} {5} {3}", TreeGridDesignerBranch._descriptionAccessibilityReplacementFields,
+                    Resources.MappingDetails_Up_And_Down, new AccessibilityReplacementField[0],
+                    Resources.MappingDetails_Up_And_Down);
             }
 
             // other header columns - {row} {column header)
-            return new VirtualTreeAccessibilityData("{3} {0}", TreeGridDesignerBranch._descriptionAccessibilityReplacementFields);
+            return new VirtualTreeAccessibilityData(
+                "{3} {0}", TreeGridDesignerBranch._descriptionAccessibilityReplacementFields,
+                Resources.MappingDetails_Up_And_Down, new AccessibilityReplacementField[0],
+                Resources.MappingDetails_Up_And_Down);
         }
 
         /// <summary>

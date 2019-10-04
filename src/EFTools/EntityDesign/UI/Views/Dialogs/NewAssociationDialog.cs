@@ -7,6 +7,7 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
     using System.ComponentModel;
     using System.Data.Entity.Infrastructure.Pluralization;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Globalization;
     using System.Windows.Forms;
     using Microsoft.Data.Entity.Design.Model;
@@ -52,7 +53,7 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
         {
             Debug.Assert(entity1 != null && entity2 != null, "both entity1 and entity2 should be non-null");
 
-            // Ensure _foreignKeysSupported is intialized before we initialize UI components.
+            // Ensure _foreignKeysSupported is initialized before we initialize UI components.
             _foreignKeysSupported =
                 EdmFeatureManager.GetForeignKeysInModelFeatureState(entity1.Artifact.SchemaVersion)
                     .IsEnabled();
@@ -113,6 +114,11 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
             UpdateEnd2NavigationPropertyName();
             UpdateExplanationText();
             UpdateCreateForeignKeysCheckBox();
+
+            cancelButton.BackColor = SystemColors.Control;
+            cancelButton.ForeColor = SystemColors.ControlText;
+            okButton.BackColor = SystemColors.Control;
+            okButton.ForeColor = SystemColors.ControlText;
         }
 
         internal string AssociationName
@@ -417,7 +423,7 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
             var supported = false;
 
 #if DEBUG
-            // verify that values are what we expexct
+            // verify that values are what we expect
             string[] values =
                 {
                     Resources.PropertyWindow_Value_MultiplicityMany, Resources.PropertyWindow_Value_MultiplicityOne,

@@ -1679,7 +1679,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                         // Handling the mouse down is a very delicate operation that
                         // involves letting us, and winforms all having a shot
                         // at the operation. WinForms does some useful things and sets
-                        // internal state indicating the the mouse is down (and gets
+                        // internal state indicating the mouse is down (and gets
                         // the capture, etc), but we don't want them to call DefWndProc
                         // because that will automatically do things like change selection
                         // when we click on an expansion button, or drag select in multiselect
@@ -2188,7 +2188,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                         && HasHorizontalScrollBar
                         && !HasVerticalScrollBar)
                     {
-                        // if there's no vertical scroll bar, mousehweel scrolls horizontally so we need to
+                        // if there's no vertical scroll bar, mousewheel scrolls horizontally so we need to
                         // update the header.
                         myHeaderContainer.UpdateHeaderControlPosition(false);
                     }
@@ -2892,7 +2892,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                         // handle Ctrl-Plus to auto-size the current column.  
                         // UNDONE: the standard listview handles this to auto-size all columns, but
                         // since we may have percentage-based columns, this is not necessarily a straightforward
-                        // operation.  Most important thing here is the accessbility requirement, which is 
+                        // operation.  Most important thing here is the accessibility requirement, which is 
                         // satisfied by allowing resize of the current column from the keyboard.  
                         if (mySelectionColumn >= 0)
                         {
@@ -4470,7 +4470,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
             var invalidatePending = false;
             var subsequentSubItems = false;
 
-            // only perfom the optimization if we arent horizontally scrolled. (bug 38565)
+            // only perform the optimization if we aren't horizontally scrolled. (bug 38565)
             if (change != 0
                 && myXPos == 0)
             {
@@ -7006,7 +7006,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                 }
             }
             //This happens fairly often and I don't know why. Investigate. For now, get by with swapping the two
-            //VSASSERT(iLastToCheck+1>=iFirstToCheck, "Invalid first to last range of visible items! Please report bug with a consisent repro.");
+            //VSASSERT(iLastToCheck+1>=iFirstToCheck, "Invalid first to last range of visible items! Please report bug with a consistent repro.");
             if (iLastToCheck + 1 < iFirstToCheck)
             {
                 // swap the two
@@ -7143,7 +7143,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
             }
 
             //this happens fairly often and I don't know why. Investigate. For now, get by with swapping the two
-            //VSASSERT(iLastToCheck+1>=iFirstToCheck, "Invalid first to last range of visible items! Please report bug with a consisent repro.");
+            //VSASSERT(iLastToCheck+1>=iFirstToCheck, "Invalid first to last range of visible items! Please report bug with a consistent repro.");
             if (iLastToCheck + 1 < iFirstToCheck)
             {
                 // swap the two
@@ -7288,7 +7288,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                 return false;
             }
 
-            var dismissEdit = GetStateFlag(VTCStateFlags.NoDismissEdit); // enusre we don't dismiss the edit while scrolling into position
+            var dismissEdit = GetStateFlag(VTCStateFlags.NoDismissEdit); // ensure we don't dismiss the edit while scrolling into position
             try
             {
                 SetStateFlag(VTCStateFlags.NoDismissEdit, true);
@@ -7389,7 +7389,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
             }
             Debug.Assert(iFirstToCheck >= newTopIndexAdjusted && iLastToCheck <= iLastVisible); //Missed a case
             //This happens fairly often and I don't know why. Investigate. For now, get by with swapping the two
-            //VSASSERT(iLastToCheck+1>=iFirstToCheck, "Invalid first to last range of visible items! Please report bug with a consisent repro.");
+            //VSASSERT(iLastToCheck+1>=iFirstToCheck, "Invalid first to last range of visible items! Please report bug with a consistent repro.");
             if (iLastToCheck + 1 < iFirstToCheck)
             {
                 // swap the two
@@ -8692,7 +8692,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
         {
             // see if branch is expandable, and if so, set the timer
             // check to see if we are already dragging over an item, so no need to set the timer again
-            // Note that a pending bump scroll takes precendence over a drag over expand.  This is so that
+            // Note that a pending bump scroll takes precedence over a drag over expand.  This is so that
             // bump scrolling doesn't get interrupted by expansion.
             if (!GetStateFlag(VTCStateFlags.InBumpScroll)
                 && (myLastDragExpandRow != myDropRow || myLastDragExpandCol != myDropColumn || !myDragTimer.Enabled))
@@ -8905,7 +8905,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                                         allowedEffects &= dragData.AllowedEffects;
                                         if (allowedEffects == 0)
                                         {
-                                            // The finaly clause will clear out the data sources gracefully
+                                            // The finally clause will clear out the data sources gracefully
                                             // if we don't set the finished signal.
                                             return VirtualTreeStartDragData.Empty;
                                         }
@@ -9281,7 +9281,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
         }
 
         /// <summary>
-        ///     Helper fucntion for OnQueryContinueDrag. Allows us to reprocess
+        ///     Helper function for OnQueryContinueDrag. Allows us to reprocess
         ///     previously processed items if the DragAction changes.
         /// </summary>
         /// <param name="args">QueryContinueDragEventArgs</param>
@@ -9566,7 +9566,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                             // tooltip does not end up returning HTTRANSPARENT all the time, so its TTF_TRANSPARENT
                             // behavior does not work, ie. mouse events do not fall thru to controls underneath. This
                             // is due to a combination of old app-specific hacks in comctl32, functional changes between
-                            // v5 and v6, and the specfic way the grid drives its tooltip. Workaround is to just
+                            // v5 and v6, and the specific way the grid drives its tooltip. Workaround is to just
                             // force HTTRANSPARENT all the time.
                             m.Result = (IntPtr)NativeMethods.HTTRANSPARENT;
                             return;
@@ -9912,7 +9912,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                         {
                             //Don't show a custom tiptext over label to reduce interference with clicking, etc
                             //However, make sure that moving from label to icons switches to special text.
-                            //Note that we only make this adjustment if label is aligned near, otherwise ClippedItemRectange
+                            //Note that we only make this adjustment if label is aligned near, otherwise ClippedItemRectangle
                             //will already be aligned away from the indent, glyph, etc.
                             extraInfo.ClippedItemRectangle.X += extraInfo.LabelOffset;
                             rectClipped = true;
@@ -10094,7 +10094,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                 myEditIndex, selectionColumn, true, sizeToText, sizeToText ? myInPlaceControl.InPlaceControl.Text : null);
             var stringWidth = rcLabel.Width;
 
-            // get exact the text bounds (acount for borders used when drawing)
+            // get exact the text bounds (account for borders used when drawing)
             rcLabel.Inflate(-SystemInformation.Border3DSize.Width, -SystemInformation.BorderSize.Height);
 
             //UNDONE: deal with this when editing is defined 
@@ -10863,7 +10863,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
         }
 
         /// <summary>
-        ///     Set the value for the StateImageAcccessibleStates property.
+        ///     Set the value for the StateImageAccessibleStates property.
         /// </summary>
         /// <param name="accessibleStates">The new accessible states</param>
         public void SetStateImageAccessibleStates(IList accessibleStates)
@@ -10883,7 +10883,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
 
         private void GetAccessibilityTextFields(
             int row, int column, ref VirtualTreeItemInfo info, out string name, out string value, out string description,
-            out string helpFile, out int helpId, out AccessibleStates state, out bool contentIsCheckBox)
+            out string helpFile, out int helpId, out AccessibleStates state, out bool contentIsCheckBox, out string helpText)
         {
             var accData = info.Branch.GetAccessibilityData(info.Row, info.Column);
             helpFile = accData.HelpFile;
@@ -10892,6 +10892,11 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                 helpFile = string.Empty;
             }
             helpId = accData.HelpContextId;
+            helpText = accData.HelpText;
+            if (helpText == null)
+            {
+                helpText = string.Empty;
+            }
             AccessibilityReplacementField[] replacementFields;
             var locValue = info.Branch.GetAccessibleValue(info.Row, info.Column);
             var locName = accData.NameFormatString;
@@ -11602,6 +11607,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
             protected readonly string myName;
             protected readonly string myValue;
             protected readonly string myDescription;
+            protected readonly string myHelpText;
             protected readonly string myHelpFile;
             protected readonly int myHelpId;
             protected readonly int myRow;
@@ -11677,7 +11683,7 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
                 myCtl = ctl;
                 ctl.GetAccessibilityTextFields(
                     row, displayColumn, ref info, out myName, out myValue, out myDescription, out myHelpFile, out myHelpId, out myState,
-                    out myCheckBoxContent);
+                    out myCheckBoxContent, out myHelpText);
                 myRow = row;
                 myDisplayColumn = displayColumn;
                 myNativeColumn = nativeColumn;
@@ -11713,6 +11719,11 @@ namespace Microsoft.Data.Tools.VSXmlDesignerBase.VirtualTreeGrid
             public override string Description
             {
                 get { return myDescription; }
+            }
+
+            public override string Help
+            {
+                get { return myHelpText; }
             }
 
             public override int GetHelpTopic(out string fileName)

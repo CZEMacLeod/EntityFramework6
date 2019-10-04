@@ -183,8 +183,19 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
                 components = new Container();
             }
             // Since Visual Studio has already defined Dispose method in the generated file(designer.cs),
-            // we instantiates Diposer class that calls our custom dispose method when Form is disposed.
+            // we instantiates Disposer class that calls our custom dispose method when Form is disposed.
             components.Add(new Disposer(OnDispose));
+
+            cancelButton.BackColor = SystemColors.Control;
+            cancelButton.ForeColor = SystemColors.ControlText;
+            okButton.BackColor = SystemColors.Control;
+            okButton.ForeColor = SystemColors.ControlText;
+            getColumnInformationButton.BackColor = SystemColors.Control;
+            getColumnInformationButton.ForeColor = SystemColors.ControlText;
+            createNewComplexTypeButton.BackColor = SystemColors.Control;
+            createNewComplexTypeButton.ForeColor = SystemColors.ControlText;
+            updateComplexTypeButton.BackColor = SystemColors.Control;
+            updateComplexTypeButton.ForeColor = SystemColors.ControlText;
         }
 
         private void OnDispose(bool disposing)
@@ -200,7 +211,7 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
             }
         }
 
-        #region Overriden Methods
+        #region Overridden Methods
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -755,7 +766,7 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
 
                 // Update complex type mode
                 // Create a sorted list for both schema columns and complex type properties.
-                var sortedColums = columns.OrderBy(col => col.Name).ToList();
+                var sortedColumns = columns.OrderBy(col => col.Name).ToList();
                 // ad this point, the selected item must not be null.
                 var selectedComplexType = complexTypeReturnComboBox.SelectedItem as ComplexType;
                 Debug.Assert(selectedComplexType != null, "There is no selected complex type.");
@@ -772,9 +783,9 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
                     var propertyName = String.Empty;
 
                     var storageModel = _container.Artifact.StorageModel();
-                    for (var i = 0; i < sortedColums.Count; i++)
+                    for (var i = 0; i < sortedColumns.Count; i++)
                     {
-                        var col = sortedColums[i];
+                        var col = sortedColumns[i];
                         prop = null;
                         // Add delete rows for all properties whose name less than column name.
                         while (propertyIndex < sortedProperties.Count)
@@ -1167,7 +1178,7 @@ namespace Microsoft.Data.Entity.Design.UI.Views.Dialogs
                 functionImportNameTextBox.Text = functionImportName;
             }
 
-            // intialize predefined function
+            // initialize predefined function
             if (baseFunction != null)
             {
                 storedProcComboBox.SelectedItem = baseFunction;

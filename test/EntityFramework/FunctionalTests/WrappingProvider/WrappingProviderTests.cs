@@ -9,12 +9,14 @@ namespace System.Data.Entity.WrappingProvider
     using System.Data.Entity.Functionals.Utilities;
     using System.Data.Entity.Infrastructure;
     using System.Data.Entity.Infrastructure.DependencyResolution;
+    using System.Data.Entity.Migrations;
     using System.Data.Entity.Migrations.Sql;
     using System.Data.Entity.SqlServer;
     using System.Data.Entity.TestHelpers;
     using System.Data.SqlClient;
     using System.Linq;
     using System.Reflection;
+    using FunctionalTests.SimpleMigrationsModel;
     using Xunit;
 
     public class WrappingProviderTests : FunctionalTestBase, IDisposable
@@ -36,6 +38,7 @@ namespace System.Data.Entity.WrappingProvider
             RegisterAdoNetProvider(typeof(SqlClientFactory));
         }
 
+#if NET452
         [Fact]
         public void Wrapping_provider_can_be_found_using_net40_style_table_lookup_even_after_first_asking_for_non_wrapped_provider()
         {
@@ -56,6 +59,7 @@ namespace System.Data.Entity.WrappingProvider
                 DbConfiguration.DependencyResolver.GetService<IDbProviderFactoryResolver>()
                                .ResolveProviderFactory(new WrappingConnection<SqlClientFactory>(new SqlConnection())));
         }
+#endif
 
         [Fact]
         public void Correct_services_are_returned_when_setup_by_replacing_ADO_NET_provider()
@@ -200,6 +204,38 @@ namespace System.Data.Entity.WrappingProvider
             Assert.Contains("Generate", methods);
         }
 
+        [Fact]
+        [UseDefaultExecutionStrategy]
+        public void Migrations_work_with_wrapping_provider_setup_by_replacing_ADO_NET_provider()
+        {
+            RegisterAdoNetProvider(typeof(WrappingAdoNetProvider<SqlClientFactory>));
+            MutableResolver.AddResolver<DbProviderServices>(k => WrappingEfProvider<SqlClientFactory, SqlProviderServices>.Instance);
+            MutableResolver.AddResolver<Func<MigrationSqlGenerator>>(WrappingEfProvider<SqlClientFactory, SqlProviderServices>.Instance);
+
+            var log = WrappingAdoNetProvider<SqlClientFactory>.Instance.Log;
+            log.Clear();
+
+            using (var context = new MigrationsBlogContext())
+            {
+                context.Database.Delete();
+            }
+
+            using (var context = new MigrationsBlogContext())
+            {
+                Assert.False(context.Database.Exists());
+            }
+
+            var migrator = new DbMigrator(new MigrateInitializerConfiguration());
+            var appliedMigrations = migrator.GetDatabaseMigrations();
+            Assert.Equal(2, appliedMigrations.Count());
+
+            // Sanity check that the wrapping provider really did get used
+            var methods = log.Select(i => i.Method).ToList();
+            Assert.Contains("ExecuteReader", methods);
+            Assert.Contains("Open", methods);
+            Assert.Contains("Close", methods);
+        }
+
         [Fact] // CodePlex 2320
         public void Model_is_available_in_DatabaseExists()
         {
@@ -254,6 +290,22 @@ namespace System.Data.Entity.WrappingProvider
             }
         }
 
+        public class MigrationsBlogContext : BlogContext
+        {
+            static MigrationsBlogContext()
+            {
+                Database.SetInitializer(new MigrateDatabaseToLatestVersion<MigrationsBlogContext, MigrationsBlogConfiguration>());
+            }
+        }
+
+        public class MigrationsBlogConfiguration : DbMigrationsConfiguration<MigrationsBlogContext>
+        {
+            public MigrationsBlogConfiguration()
+            {
+                MigrationsNamespace = "FunctionalTests.MigrationsBlogContext";
+            }
+        }
+
         public abstract class BlogContext : DbContext
         {
             public DbSet<Blog> Blogs { get; set; }
@@ -278,6 +330,7 @@ namespace System.Data.Entity.WrappingProvider
 
         private static void RegisterAdoNetProvider(Type providerFactoryType)
         {
+#if NET452
             var row = _providerTable.NewRow();
             row["Name"] = "SqlClient Data Provider";
             row["Description"] = ".Net Framework Data Provider for SqlServer";
@@ -286,6 +339,10 @@ namespace System.Data.Entity.WrappingProvider
 
             _providerTable.Rows.Remove(_providerTable.Rows.Find(SqlClientInvariantName));
             _providerTable.Rows.Add(row);
+#else
+            DbProviderFactories.UnregisterFactory(SqlClientInvariantName);
+            DbProviderFactories.RegisterFactory(SqlClientInvariantName, providerFactoryType.AssemblyQualifiedName);
+#endif
         }
 
         private static void RegisterResolvers()

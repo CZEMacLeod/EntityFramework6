@@ -848,7 +848,7 @@ namespace Microsoft.Data.Entity.Design.Package
                 {
                     var entityShape = view.Selection.PrimaryItem.Shape as EntityTypeShape;
 
-                    // if EntityShape is null, the user might select the the entity shape compartment.
+                    // if EntityShape is null, the user might select the entity shape compartment.
                     if (entityShape == null)
                     {
                         var compartment = view.Selection.PrimaryItem.Shape as ElementListCompartment;
@@ -863,7 +863,7 @@ namespace Microsoft.Data.Entity.Design.Package
                         // Make sure what is returned is what the user requested.
                         Debug.Assert(
                             result != null,
-                            "Could not retrieve compartment with isPropertiesComparment property value : " + isPropertiesCompartment);
+                            "Could not retrieve compartment with isPropertiesCompartment property value : " + isPropertiesCompartment);
                     }
                 }
             }
@@ -1299,9 +1299,30 @@ namespace Microsoft.Data.Entity.Design.Package
             return true;
         }
 
+        internal static string RegKeyConfirmDelete = "ShowConfirmDeleteDialog";
+
+        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+        [SuppressMessage("Microsoft.Usage", "CA1806:DoNotIgnoreMethodResults", MessageId = "System.Boolean.TryParse(System.String,System.Boolean@)")]
         internal void OnMenuDelete(object sender, EventArgs e)
         {
+            // confirm user wants to delete (see Accessibility bugs 457903 & 457904)
+            bool displayConfirmDeleteDialog = true;
+            var shouldConfirmDelete = EdmUtils.GetUserSetting(RegKeyConfirmDelete);
+            if (!string.IsNullOrEmpty(shouldConfirmDelete))
+            {
+                bool.TryParse(shouldConfirmDelete, out displayConfirmDeleteDialog);
+            }
+            if (displayConfirmDeleteDialog
+                && DismissibleWarningDialog.ShowWarningDialogAndSaveDismissOption(
+                    DialogsResource.ConfirmDeleteDialog_Title,
+                    DialogsResource.ConfirmDeleteDialog_DescriptionLabel_Text,
+                    RegKeyConfirmDelete,
+                    DismissibleWarningDialog.ButtonMode.YesNo))
+            {
+                    return;
+            }
+
             var diagram = GetDiagram();
             if (diagram != null
                 && ((diagram.Partition.GetLocks() & Locks.Delete) == Locks.Delete))
@@ -1540,14 +1561,6 @@ namespace Microsoft.Data.Entity.Design.Package
                                 }
                             }
                         }
-                    }
-                }
-                else
-                {
-                    // Add delete command for the entity type to the queue.
-                    foreach (var efElement in toBeDeletedElements)
-                    {
-                        commands.Add(efElement.GetDeleteCommand());
                     }
                 }
             }
@@ -2836,7 +2849,7 @@ namespace Microsoft.Data.Entity.Design.Package
                             var name = (end == ConnectorEnd.Source)
                                            ? SelectedAssociationConnector.ModelElement.SourceEntityType.Name
                                            : SelectedAssociationConnector.ModelElement.TargetEntityType.Name;
-                            cmd.Text = String.Format(CultureInfo.CurrentCulture, Resources.SelectAssociationEndCommnadText, name);
+                            cmd.Text = String.Format(CultureInfo.CurrentCulture, Resources.SelectAssociationEndCommandText, name);
                         }
                         else
                         {
@@ -3118,7 +3131,7 @@ namespace Microsoft.Data.Entity.Design.Package
                         var property = obj as Property;
                         Debug.Assert(
                             property != null && property.EntityType == selectedProperty.EntityType,
-                            "Selected object is not a property or is from another EnityType");
+                            "Selected object is not a property or is from another EntityType");
                         if (property != null
                             && property.EntityType == selectedProperty.EntityType)
                         {
@@ -3325,7 +3338,7 @@ namespace Microsoft.Data.Entity.Design.Package
                                     var cp = new CommandProcessor(cpc, cmd);
                                     cp.Invoke();
                                     // Ensure that newly created properties are selected.
-                                    // Since we dont support copy and past for navigation properties, we can safely assume pass the entity's PropertiesCompartment.
+                                    // Since we don't support copy and past for navigation properties, we can safely assume pass the entity's PropertiesCompartment.
                                     SelectProperties(cmd.Properties, entityShape.PropertiesCompartment);
                                 }
                             }
@@ -3799,7 +3812,7 @@ namespace Microsoft.Data.Entity.Design.Package
                     var property = obj as Property;
                     Debug.Assert(
                         property != null && property.EntityType == selectedProperty.EntityType,
-                        "Selected object is not a property or is from another EnityType");
+                        "Selected object is not a property or is from another EntityType");
                     if (property != null
                         && property.EntityType == selectedProperty.EntityType)
                     {
